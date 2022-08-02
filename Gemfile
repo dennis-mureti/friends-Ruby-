@@ -48,8 +48,6 @@ gem "bootsnap", require: false
 
 gem 'devise', '~> 4.8', '>= 4.8.1'
 
-import 'jquery-ujs';
-
 #gem "tzinfo-data"
 #gem 'tzinfo-data'
 
