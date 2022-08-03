@@ -1,5 +1,7 @@
 class FriendsController < ApplicationController
   before_action :set_friend, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!, except: [:index, :show] # to show that one can't do anything if not logged in.they can only see index page and show page.
+  before_action :correct_user, only: [:edit, :update, :destroy] # look up to see that its correct user for mentioned pages.
 
   # GET /friends or /friends.json
   def index
@@ -12,7 +14,8 @@ class FriendsController < ApplicationController
 
   # GET /friends/new
   def new
-    @friend = Friend.new
+    # @friend = Friend.new
+    @friend = current_user.friends.build
   end
 
   # GET /friends/1/edit
@@ -21,7 +24,8 @@ class FriendsController < ApplicationController
 
   # POST /friends or /friends.json
   def create
-    @friend = Friend.new(friend_params)
+    # @friend = Friend.new(friend_params)
+    @friend = current_user.friends.build(friend_params)
 
     respond_to do |format|
       if @friend.save
@@ -56,6 +60,11 @@ class FriendsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def correct_user
+    @friend = current_user.friends.find_by(id: params[:id]) # correct user is user with the said id
+    redirect_to friends_path, notice: "Not Authorized To Edit" if @friend.nil?
+    end
 
   private
     # Use callbacks to share common setup or constraints between actions.
